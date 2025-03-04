@@ -1,5 +1,4 @@
 import express from "express";
-import multer from "multer";
 import {
   createService,
   getAllServices,
@@ -7,19 +6,9 @@ import {
   updateService,
   deleteService,
 } from "../controllers/services.controller.js";
+import { upload } from "../config/cloudinaryConfig.js"; // Import Cloudinary upload
 
 const router = express.Router();
-
-// Multer Setup
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); 
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-const upload = multer({ storage: storage });
 
 router.post("/post", upload.single("image"), createService);
 router.get("/getAll", getAllServices);

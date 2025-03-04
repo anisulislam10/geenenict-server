@@ -32,12 +32,14 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // For form-urlencoded
+app.use(bodyParser.json()); // For JSON parsing
 app.use(bodyParser.urlencoded({ extended: true }));
 // Static Files (If Using File Uploads)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(cors({ 
-    origin: ["http://localhost:5175", "http://localhost:5173", "https://geenenict-server.vercel.app","https://geenenict-landing-page.vercel.app","http://localhost:3000","https://geenenict-landing-page.vercel.app" ], 
+    origin: ["http://localhost:5175", "http://localhost:5173", "https://geenenict-server.vercel.app","https://geenenict-landing-page.vercel.app","http://localhost:3000","https://geenenict-landing-page.vercel.app"], 
     credentials: true 
   }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

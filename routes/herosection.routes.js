@@ -19,7 +19,20 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
-const upload = multer({ storage: storage });
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true); // Accept any image type (jpeg, png, webp, gif, etc.)
+  } else {
+    cb(new Error("Only image files are allowed!"), false);
+  }
+};
+
+const upload = multer({ 
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB for security
+});
 
 router.post("/post", upload.single("image"), createHeroSection);
 router.get("/getAll", getAllHeroSections);

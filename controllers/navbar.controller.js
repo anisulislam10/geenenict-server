@@ -6,9 +6,9 @@ export const createNavbar = async (req, res) => {
     const { logoText, buttonText } = req.body;
     const logo = req.file ? `/uploads/${req.file.filename}` : null;
 
-    // if (!logo || !logoText || !buttonText) {
-    //   return res.status(400).json({ message: "Logo, logoText, and buttonText are required" });
-    // }
+    if (!logoText || !buttonText) {
+      return res.status(400).json({ message: "logoText, and buttonText are required" });
+    }
 
     const newNavbar = new Navbar({ logo, logoText, buttonText });
     await newNavbar.save();

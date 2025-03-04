@@ -36,7 +36,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(cors({ 
-    origin: ["http://localhost:5175", "http://localhost:5173", ], 
+    origin: ["http://localhost:5175", "http://localhost:5173", "https://geenenict-server.vercel.app","https://geenenict-landing-page.vercel.app" ], 
     credentials: true 
   }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -53,11 +53,6 @@ app.use("/api/contact-section",contactsectionRoutes)
 app.use("/api/contact", contactRoutes);
 app.use("/api/footer", footerRoutes);
 app.use("/api/workmethod", workMethodRoutes);
-
-
-
-
-
 
 
 

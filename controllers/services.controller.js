@@ -1,27 +1,17 @@
 import { Service } from "../models/services.models.js";
-import { cloudinary } from "../config/cloudinaryConfig.js"; // Import Cloudinary
 
 // Create Service
 export const createService = async (req, res) => {
   try {
     const { title, description } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
 
-    // Upload image to Cloudinary
-    let imageUrl = null;
-    if (req.file) {
-      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
-        folder: "services_uploads",
-      });
-      imageUrl = uploadedImage.secure_url;
-    }
-
-    if (!title || !description || !imageUrl) {
+    if (!title || !description || !image) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    const newService = new Service({ title, description, image: imageUrl });
+    const newService = new Service({ title, description, image });
     await newService.save();
-
     res.status(201).json({ success: true, message: "Service created", data: newService });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -55,22 +45,16 @@ export const updateService = async (req, res) => {
   try {
     const { title, description } = req.body;
     const existingService = await Service.findById(req.params.id);
-
+    
     if (!existingService) {
       return res.status(404).json({ success: false, message: "Service not found" });
     }
 
-    let imageUrl = existingService.image;
-    if (req.file) {
-      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
-        folder: "services_uploads",
-      });
-      imageUrl = uploadedImage.secure_url;
-    }
+    const image = req.file ? `/uploads/${req.file.filename}` : existingService.image;
 
     existingService.title = title || existingService.title;
     existingService.description = description || existingService.description;
-    existingService.image = imageUrl;
+    existingService.image = image;
 
     await existingService.save();
 

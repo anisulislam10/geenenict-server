@@ -44,18 +44,21 @@ export const getServiceById = async (req, res) => {
 export const updateService = async (req, res) => {
   try {
     const { title, description } = req.body;
-    let image = req.file ? `/uploads/${req.file.filename}` : undefined;
-
     const existingService = await Service.findById(req.params.id);
-    if (!existingService) return res.status(404).json({ success: false, message: "Service not found" });
+    
+    if (!existingService) {
+      return res.status(404).json({ success: false, message: "Service not found" });
+    }
 
-    const updatedService = await Service.findByIdAndUpdate(
-      req.params.id,
-      { title, description, image: image || existingService.image }, // Retain old image if new one isn't provided
-      { new: true, runValidators: true }
-    );
+    const image = req.file ? `/uploads/${req.file.filename}` : existingService.image;
 
-    res.status(200).json({ success: true, message: "Service updated", data: updatedService });
+    existingService.title = title || existingService.title;
+    existingService.description = description || existingService.description;
+    existingService.image = image;
+
+    await existingService.save();
+
+    res.status(200).json({ success: true, message: "Service updated", data: existingService });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

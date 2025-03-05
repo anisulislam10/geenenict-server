@@ -1,17 +1,24 @@
+import fs from "fs";
 import { Navbar } from "../models/navbar.models.js";
 
 // Create Navbar Item
 export const createNavbar = async (req, res) => {
   try {
     const { logoText, buttonText } = req.body;
-    const logo = req.file ? `/uploads/${req.file.filename}` : null;
+    let logo = null;
+
+    if (req.file) {
+      // Convert image to Base64
+      logo = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+    }
 
     if (!logoText || !buttonText) {
-      return res.status(400).json({ message: "logoText, and buttonText are required" });
+      return res.status(400).json({ message: "logoText and buttonText are required" });
     }
 
     const newNavbar = new Navbar({ logo, logoText, buttonText });
     await newNavbar.save();
+    
     res.status(201).json({ message: "Navbar item created", data: newNavbar });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -44,7 +51,12 @@ export const getNavbarById = async (req, res) => {
 export const updateNavbar = async (req, res) => {
   try {
     const { logoText, buttonText } = req.body;
-    let logo = req.file ? `/uploads/${req.file.filename}` : null;
+    let logo = null;
+
+    if (req.file) {
+      // Convert image to Base64
+      logo = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+    }
 
     const updatedNavbar = await Navbar.findByIdAndUpdate(
       req.params.id,

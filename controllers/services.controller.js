@@ -4,13 +4,16 @@ import { Service } from "../models/services.models.js";
 export const createService = async (req, res) => {
   try {
     const { title, description } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : null;
 
-    if (!title || !description || !image) {
+    if (!title || !description || !req.file) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    const newService = new Service({ title, description, image });
+    // Convert image to Base64
+    const imageBase64 = req.file.buffer.toString("base64");
+
+    const newService = new Service({ title, description, image: imageBase64 });
+
     await newService.save();
     res.status(201).json({ success: true, message: "Service created", data: newService });
   } catch (error) {
@@ -45,12 +48,13 @@ export const updateService = async (req, res) => {
   try {
     const { title, description } = req.body;
     const existingService = await Service.findById(req.params.id);
-    
+
     if (!existingService) {
       return res.status(404).json({ success: false, message: "Service not found" });
     }
 
-    const image = req.file ? `/uploads/${req.file.filename}` : existingService.image;
+    // Convert new image to Base64 if provided
+    const image = req.file ? req.file.buffer.toString("base64") : existingService.image;
 
     existingService.title = title || existingService.title;
     existingService.description = description || existingService.description;

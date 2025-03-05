@@ -1,5 +1,5 @@
 import express from "express";
-import multer from "multer";
+import upload from "../config/multer.js"; // Updated multer
 import {
   createService,
   getAllServices,
@@ -9,17 +9,6 @@ import {
 } from "../controllers/services.controller.js";
 
 const router = express.Router();
-
-// Multer Setup
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); 
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-const upload = multer({ storage: storage });
 
 router.post("/post", upload.single("image"), createService);
 router.get("/getAll", getAllServices);

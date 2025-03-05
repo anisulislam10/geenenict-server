@@ -7,20 +7,21 @@ export const createHeroSection = async (req, res) => {
     console.log("Body:", req.body);
 
     const { header, title, subtitle, subsubtitle, description, whoIAm, expertise } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : null;
-
-    if (!header || !title || !subtitle || !subsubtitle || !description || !whoIAm || !expertise || !image) {
-      return res.status(400).json({
-         message: "All fields are required" 
-        });
+    
+    if (!header || !title || !subtitle || !subsubtitle || !description || !whoIAm || !expertise || !req.file) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    const newHeroSection = new HeroSection({ header, title, subtitle, subsubtitle, description, whoIAm, expertise, image });
+    // Convert image to Base64
+    const imageBase64 = req.file.buffer.toString("base64");
+
+    const newHeroSection = new HeroSection({ 
+      header, title, subtitle, subsubtitle, description, whoIAm, expertise, image: imageBase64 
+    });
+
     await newHeroSection.save();
-    res.status(201).json({
-         message: "Hero Section created",
-          data: newHeroSection 
-        });
+    res.status(201).json({ message: "Hero Section created", data: newHeroSection });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -51,18 +52,29 @@ export const getHeroSectionById = async (req, res) => {
 // Update Hero Section
 export const updateHeroSection = async (req, res) => {
   try {
-    const { header, title, subtitle, subsubtitle, description, whoIAm, expertise, } = req.body;
-    let image = req.file ? `/uploads/${req.file.filename}` : null;
+    const { header, title, subtitle, subsubtitle, description, whoIAm, expertise } = req.body;
+    
+    const existingHeroSection = await HeroSection.findById(req.params.id);
+    if (!existingHeroSection) {
+      return res.status(404).json({ message: "Hero Section not found" });
+    }
 
-    const updatedHeroSection = await HeroSection.findByIdAndUpdate(
-      req.params.id,
-      { header, title, subtitle, subsubtitle, description, whoIAm, expertise, image },
-      { new: true, runValidators: true }
-    );
+    // Convert new image to Base64 if provided
+    const image = req.file ? req.file.buffer.toString("base64") : existingHeroSection.image;
 
-    if (!updatedHeroSection) return res.status(404).json({ message: "Hero Section not found" });
+    existingHeroSection.header = header || existingHeroSection.header;
+    existingHeroSection.title = title || existingHeroSection.title;
+    existingHeroSection.subtitle = subtitle || existingHeroSection.subtitle;
+    existingHeroSection.subsubtitle = subsubtitle || existingHeroSection.subsubtitle;
+    existingHeroSection.description = description || existingHeroSection.description;
+    existingHeroSection.whoIAm = whoIAm || existingHeroSection.whoIAm;
+    existingHeroSection.expertise = expertise || existingHeroSection.expertise;
+    existingHeroSection.image = image;
 
-    res.status(200).json({ message: "Hero Section updated", data: updatedHeroSection });
+    await existingHeroSection.save();
+
+    res.status(200).json({ message: "Hero Section updated", data: existingHeroSection });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -75,6 +87,7 @@ export const deleteHeroSection = async (req, res) => {
     if (!deletedHeroSection) return res.status(404).json({ message: "Hero Section not found" });
 
     res.status(200).json({ message: "Hero Section deleted" });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

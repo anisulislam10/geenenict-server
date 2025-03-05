@@ -13,6 +13,6 @@ router.post("/post", createMetadata);
 router.get("/get", getAllMetadata);
 router.get("/:id", getMetadataById);
 router.put("/update/:id", updateMetadata);
-router.delete("delete/:id", deleteMetadata);
+router.delete("/delete/:id", deleteMetadata);
 
 export default router;

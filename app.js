@@ -21,6 +21,7 @@ import footerRoutes from "./routes/footer.routes.js";
 import workMethodRoutes from "./routes/workmethod.routes.js";
 
 import metadataRoutes from "./routes/metadata.routes.js";
+import smtpRoutes from './routes/smtp.routes.js'
 
 
 
@@ -57,6 +58,7 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/footer", footerRoutes);
 app.use("/api/workmethod", workMethodRoutes);
 app.use("/api/metadata", metadataRoutes); 
+app.use("/api/smtp", smtpRoutes)
 
 
 

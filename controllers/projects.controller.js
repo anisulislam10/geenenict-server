@@ -4,12 +4,18 @@ import { Project } from "../models/projects.models.js";
 export const createProject = async (req, res) => {
   try {
     const { title, description } = req.body;
+    let image = null;
+
+    if (req.file) {
+      // Convert image to Base64
+      image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+    }
 
     if (!title || !description) {
       return res.status(400).json({ message: "Title and description are required" });
     }
 
-    const newProject = new Project({ title, description });
+    const newProject = new Project({ title, description, image });
     await newProject.save();
     res.status(201).json({ message: "Project added", data: newProject });
   } catch (error) {
@@ -43,10 +49,16 @@ export const getProjectById = async (req, res) => {
 export const updateProject = async (req, res) => {
   try {
     const { title, description } = req.body;
+    let image = null;
+
+    if (req.file) {
+      // Convert image to Base64
+      image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+    }
 
     const updatedProject = await Project.findByIdAndUpdate(
       req.params.id,
-      { title, description },
+      { title, description, image },
       { new: true, runValidators: true }
     );
 

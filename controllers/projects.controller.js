@@ -3,13 +3,7 @@ import { Project } from "../models/projects.models.js";
 // Create a Project
 export const createProject = async (req, res) => {
   try {
-    const { title, description } = req.body;
-    let image = null;
-
-    if (req.file) {
-      // Convert image to Base64
-      image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
-    }
+    const { title, description, image } = req.body; // Expect image as Base64 string
 
     if (!title || !description) {
       return res.status(400).json({ message: "Title and description are required" });
@@ -48,13 +42,7 @@ export const getProjectById = async (req, res) => {
 // Update Project
 export const updateProject = async (req, res) => {
   try {
-    const { title, description } = req.body;
-    let image = null;
-
-    if (req.file) {
-      // Convert image to Base64
-      image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
-    }
+    const { title, description, image } = req.body; // Expect image as Base64 string
 
     const updatedProject = await Project.findByIdAndUpdate(
       req.params.id,

@@ -1,18 +1,18 @@
-import {Client}  from "../models/clients.models.js";
+import { Client } from "../models/clients.models.js";
 
-// Create Client (Add Image)
+// Create Client (Add Base64 Image)
 export const createClient = async (req, res) => {
   try {
-    console.log("File received:", req.file);
-
-    const image = req.file ? `/uploads/${req.file.filename}` : null;
+    const { image } = req.body; // Expecting a Base64 image string in the request body
 
     if (!image) {
       return res.status(400).json({ message: "Image is required" });
     }
 
+    // Create a new client with the Base64 image
     const newClient = new Client({ image });
     await newClient.save();
+
     res.status(201).json({ message: "Client added", data: newClient });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -41,10 +41,14 @@ export const getClientById = async (req, res) => {
   }
 };
 
-// Update Client Image
+// Update Client Image (Base64)
 export const updateClient = async (req, res) => {
   try {
-    let image = req.file ? `/uploads/${req.file.filename}` : null;
+    const { image } = req.body; // Expecting a Base64 image string in the request body
+
+    if (!image) {
+      return res.status(400).json({ message: "Image is required" });
+    }
 
     const updatedClient = await Client.findByIdAndUpdate(
       req.params.id,

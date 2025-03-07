@@ -1,5 +1,5 @@
 import express from "express";
-import multer from "multer";
+import upload from "../config/multer.js"; 
 import {
   createClient,
   getAllClients,
@@ -10,18 +10,8 @@ import {
 
 const router = express.Router();
 
-// Multer Setup for Image Uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); 
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-const upload = multer({ storage: storage });
 
-router.post("/post", upload.single("image"), createClient);
+router.post("/post",upload.single("image"), createClient);
 router.get("/getAll", getAllClients);
 router.get("/:id", getClientById);
 router.put("/update/:id", upload.single("image"), updateClient);

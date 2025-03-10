@@ -6,9 +6,9 @@ export const createContact = async (req, res) => {
     const { title } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : null;
 
-    if (!title || !image) {
-      return res.status(400).json({ message: "Title and Image are required" });
-    }
+    // if (!title || !image) {
+    //   return res.status(400).json({ message: "Title and Image are required" });
+    // }
 
     const newContact = new Contact({ title, image });
     await newContact.save();

@@ -1,19 +1,15 @@
 import { Client } from "../models/clients.models.js";
 
-// Create Client (Add Base64 Image)
+// Create Client (Add Base64 Image and Link)
 export const createClient = async (req, res) => {
   try {
-    const { image } = req.body; // Expecting a Base64 image string in the request body
+    const { image, link } = req.body; // Expecting a Base64 image string and link in the request body
 
-    if (!image) {
-      return res.status(400).json({ message: "Image is required" });
-    }
-
-    // Create a new client with the Base64 image
-    const newClient = new Client({ image });
+    // Create a new client with the Base64 image and link
+    const newClient = new Client({ image, link });
     await newClient.save();
 
-    res.status(201).json({ message: "Client added", data: newClient });
+    res.status(201).json({ message: "Certificate added", data: newClient });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -33,7 +29,7 @@ export const getAllClients = async (req, res) => {
 export const getClientById = async (req, res) => {
   try {
     const client = await Client.findById(req.params.id);
-    if (!client) return res.status(404).json({ message: "Client not found" });
+    if (!client) return res.status(404).json({ message: "Certificate not found" });
 
     res.status(200).json(client);
   } catch (error) {
@@ -41,24 +37,20 @@ export const getClientById = async (req, res) => {
   }
 };
 
-// Update Client Image (Base64)
+// Update Client Image and Link
 export const updateClient = async (req, res) => {
   try {
-    const { image } = req.body; // Expecting a Base64 image string in the request body
-
-    if (!image) {
-      return res.status(400).json({ message: "Image is required" });
-    }
+    const { image, link } = req.body; // Expecting a Base64 image string and link in the request body
 
     const updatedClient = await Client.findByIdAndUpdate(
       req.params.id,
-      { image },
+      { image, link },
       { new: true, runValidators: true }
     );
 
-    if (!updatedClient) return res.status(404).json({ message: "Client not found" });
+    if (!updatedClient) return res.status(404).json({ message: "Certificate not found" });
 
-    res.status(200).json({ message: "Client image updated", data: updatedClient });
+    res.status(200).json({ message: "Certificate updated", data: updatedClient });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -70,7 +62,7 @@ export const deleteClient = async (req, res) => {
     const deletedClient = await Client.findByIdAndDelete(req.params.id);
     if (!deletedClient) return res.status(404).json({ message: "Client not found" });
 
-    res.status(200).json({ message: "Client deleted" });
+    res.status(200).json({ message: "Certificate deleted" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -23,17 +23,13 @@ import workMethodRoutes from "./routes/workmethod.routes.js";
 import metadataRoutes from "./routes/metadata.routes.js";
 import smtpRoutes from './routes/smtp.routes.js'
 
-
-
-
-
 dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // For form-urlencoded
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(bodyParser.json()); // For JSON parsing
 app.use(bodyParser.urlencoded({ extended: true }));
 // Static Files (If Using File Uploads)
@@ -59,15 +55,8 @@ app.use("/api/footer", footerRoutes);
 app.use("/api/workmethod", workMethodRoutes);
 app.use("/api/metadata", metadataRoutes); 
 app.use("/api/smtp", smtpRoutes)
-
-
-
-
-
 connectDB()
-
   app.listen(process.env.PORT,()=>{
     console.log(`server is running at port ${process.env.PORT}`)
   })
-
 export default app;

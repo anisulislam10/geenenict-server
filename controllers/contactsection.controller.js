@@ -3,8 +3,8 @@ import { Contact } from "../models/contactsection.models.js";
 // Create Contact Section
 export const createContact = async (req, res) => {
   try {
-    const { title } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : null;
+    const {image, title } = req.body;
+    // const image = req.file ? `/uploads/${req.file.filename}` : null;
 
     // if (!title || !image) {
     //   return res.status(400).json({ message: "Title and Image are required" });
@@ -44,8 +44,7 @@ export const getContactById = async (req, res) => {
 // Update Contact Section
 export const updateContact = async (req, res) => {
   try {
-    const { title } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : null;
+    const { title,image } = req.body;
 
     const updatedContact = await Contact.findByIdAndUpdate(
       req.params.id,

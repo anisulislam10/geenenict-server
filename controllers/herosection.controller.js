@@ -8,9 +8,9 @@ export const createHeroSection = async (req, res) => {
 
     const { header, title, subtitle, subsubtitle, description, whoIAm, expertise } = req.body;
     
-    if (!header || !title || !subtitle || !subsubtitle || !description || !whoIAm || !expertise || !req.file) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+    // if (!header || !title || !subtitle || !subsubtitle || !description || !whoIAm || !expertise || !req.file) {
+    //   return res.status(400).json({ message: "All fields are required" });
+    // }
 
     // Convert image to Base64
     const imageBase64 = req.file.buffer.toString("base64");

@@ -36,7 +36,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(cors({ 
-    origin: ["http://localhost:5175", "http://localhost:5173", "https://geenenict-server.vercel.app","https://geenenict-landing-page.vercel.app","http://localhost:3000","https://geenenict-landing-page.vercel.app","https://digidaal-landing-page.vercel.app"], 
+    origin: ["http://localhost:5175", "http://localhost:5173", "https://geenenict-server.vercel.app","https://geenenict-landing-page.vercel.app","http://localhost:3000","https://geenenict-landing-page.vercel.app","https://digidaal-landing-page.vercel.app", "https://www.digidaal.nl","https://www.digidaal.com"], 
     credentials: true 
   }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
